@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id         String   @id @db.Uuid // Supabase auth.users.id와 연결
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  email      String   @unique // 카카오에서 제공받은 이메일 
+  name       String   // 카카오에서 제공받은 이름 
+  avatar_url String?   // 카카오에서 제공받은 프로필 사진 URL
+
+  // @@map("profiles") // 테이블명을 'profiles'로 명시 (선택적, Prisma 규칙에 따르면 Profile 모델은 profiles 테이블이 됨)
+}
