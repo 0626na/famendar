@@ -2,8 +2,6 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-    // NextResponse.next()를 호출하여 응답 객체를 미리 생성합니다.
-    // 이렇게 하면 미들웨어에서 응답 헤더를 수정할 수 있습니다.
     let response = NextResponse.next({
         request: {
             headers: request.headers,
