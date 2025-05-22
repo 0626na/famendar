@@ -17,25 +17,25 @@ export default function AuthCallback() {
         } = supabase.auth.onAuthStateChange((event, session) => {
             // OAuth 로그인 후 'SIGNED_IN' 이벤트와 함께 세션이 감지되면
             // 사용자를 홈페이지 또는 원하는 다른 페이지로 리디렉션합니다.
-            if (event === "SIGNED_IN" && session) {
-                subscription.unsubscribe(); // 리스너 정리
-                router.replace("/"); // 홈페이지로 리디렉션
-            } else if (event === "INITIAL_SESSION" && session) {
-                // 페이지 로드 시 이미 세션이 있는 경우 (예: 콜백 페이지 새로고침)
+            if (
+                session &&
+                (event === "SIGNED_IN" || event === "INITIAL_SESSION")
+            ) {
+                // OAuth 로그인 성공 또는 페이지 로드 시 세션 존재
                 subscription.unsubscribe();
-                router.replace("/");
+                router.replace("/"); // 홈페이지로 리디렉션
             } else if (
                 event === "SIGNED_OUT" ||
                 (event === "INITIAL_SESSION" && !session)
             ) {
-                // 세션 설정에 실패했거나 로그아웃된 경우 로그인 페이지로 보냅니다.
+                // 로그아웃 또는 세션 없는 초기 상태
                 subscription.unsubscribe();
-                router.replace("/login");
+                router.replace("/login"); // 로그인 페이지로 리디렉션
             }
         });
 
         return () => {
-            subscription.unsubscribe(); // 컴포넌트 언마운트 시 리스너 정리
+            subscription.unsubscribe();
         };
     }, [router]);
 

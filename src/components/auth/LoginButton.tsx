@@ -20,7 +20,7 @@ export default function LoginButton() {
     return (
         <button
             onClick={handleLoginWithKakao}
-            className="btn p-0 relative w-23 h-11 hover:opacity-90 hover:brightness-90 rounded-lg cursor-pointer"
+            className="btn p-0 relative w-24 h-11 hover:opacity-90 hover:brightness-90 rounded-lg cursor-pointer overflow-hidden"
             aria-label="카카오 계정으로 로그인"
         >
             {" "}
@@ -28,6 +28,7 @@ export default function LoginButton() {
                 src="/kakao_login_medium.png"
                 layout="fill"
                 alt="카카오 로그인"
+                objectFit="cover"
             />
         </button>
     );
