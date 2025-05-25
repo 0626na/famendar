@@ -46,13 +46,23 @@ export async function middleware(request: NextRequest) {
     // 사용자의 세션 정보를 가져옵니다.
     // supabase.auth.getUser()는 세션을 갱신하고 사용자 정보를 반환합니다.
     // 이 호출은 또한 쿠키에 최신 인증 토큰을 설정하는 데 도움이 됩니다.
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    const { data, error: userError } = await supabase.auth.getUser();
+
+    // supabase.auth.getUser() 호출 중 오류가 발생했는지 확인합니다.
+    if (userError) {
+        console.error(
+            "미들웨어에서 사용자 세션 조회 중 오류 발생:",
+            userError.message
+        );
+        // 오류 발생 시, 안전하게 로그인 페이지로 리디렉션합니다.
+        // 이는 사용자가 인증되지 않은 것으로 간주하는 것과 유사한 효과를 냅니다.
+        return NextResponse.redirect(new URL("/login", request.url));
+    }
 
     // 인증된 사용자가 없으면 로그인 페이지로 리디렉션합니다.
     // matcher 설정에 의해 /login 경로는 이미 이 미들웨어 실행에서 제외됩니다.
-    if (!user) {
+    if (!data?.user) {
+        // data가 null일 수 있으므로 안전하게 user에 접근합니다.
         return NextResponse.redirect(new URL("/login", request.url));
     }
 
