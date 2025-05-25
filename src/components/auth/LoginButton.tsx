@@ -14,6 +14,7 @@ export default function LoginButton() {
             },
         });
 
+        //Todo: 지금은 alert로 간단하게 처리 했지만 추후 Toast 로 변경할 예정
         if (error)
             alert(
                 `카카오 로그인에 실패했습니다: ${error.message}\n잠시 후 다시 시도해 주세요.`
