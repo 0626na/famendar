@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import LoginButton from "./auth/LoginButton";
 import { useAuthStore } from "@/store/authStore";
 
 export default function Header() {
@@ -15,32 +14,29 @@ export default function Header() {
                     Famender
                 </Link>
 
-                <div>
-                    {isLoading ? (
-                        <div className="w-10 h-10 bg-gray-700 rounded-full animate-pulse" />
-                    ) : profile ? (
-                        <div className="w-10 h-10 rounded-full relative overflow-hidden">
-                            {profile.avatar_url ? (
+                {profile && (
+                    <div>
+                        {isLoading ? (
+                            <div className="size-10 bg-gray-700 rounded-full animate-pulse" />
+                        ) : profile?.avatar_url ? (
+                            <div className="size-10 avatar">
                                 <Image
                                     src={profile.avatar_url}
                                     alt={profile.name}
                                     fill
-                                    className="object-cover cursor-pointer "
+                                    className="object-cover cursor-pointer rounded-full"
                                     // TODO: 클릭 시 드롭다운 메뉴 (프로필, 설정, 로그아웃 등)
                                 />
-                            ) : (
-                                <div
-                                    className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold cursor-pointer"
-                                    // TODO: 클릭 시 드롭다운 메뉴
-                                >
-                                    {profile.name}
+                            </div>
+                        ) : (
+                            <div className="size-10 avatar avatar-placeholder">
+                                <div className="h-full w-full bg-gray-700 text-white rounded-full">
+                                    {profile?.name?.charAt(0).toUpperCase()}
                                 </div>
-                            )}
-                        </div>
-                    ) : (
-                        <LoginButton />
-                    )}
-                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
             </nav>
         </header>
     );
