@@ -22,14 +22,12 @@ export default function AuthCallback() {
                 (event === "SIGNED_IN" || event === "INITIAL_SESSION")
             ) {
                 // OAuth 로그인 성공 또는 페이지 로드 시 세션 존재
-                subscription.unsubscribe();
                 router.replace("/"); // 홈페이지로 리디렉션
             } else if (
                 event === "SIGNED_OUT" ||
                 (event === "INITIAL_SESSION" && !session)
             ) {
                 // 로그아웃 또는 세션 없는 초기 상태
-                subscription.unsubscribe();
                 router.replace("/login"); // 로그인 페이지로 리디렉션
             }
         });
