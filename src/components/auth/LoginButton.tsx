@@ -14,7 +14,10 @@ export default function LoginButton() {
             },
         });
 
-        if (error) console.error("카카오 로그인 중 오류 발생:", error.message);
+        if (error)
+            alert(
+                `카카오 로그인에 실패했습니다: ${error.message}\n잠시 후 다시 시도해 주세요.`
+            );
     };
 
     return (
