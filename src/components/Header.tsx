@@ -16,6 +16,7 @@ function UserProfile({ user }: { user: Profile }) {
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) {
+            //TODO: 로그아웃 시에 에러가 발생할 경우, 토스트 알람으로 유저에게 표시하기.
             console.error("로그아웃 중 오류 발생:", error.message);
         } else {
             clearAuth(); // 로그아웃 성공 시 스토어 상태 초기화

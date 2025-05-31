@@ -74,6 +74,7 @@ export const generatePeriodDays = (
  * @returns
  */
 export const generateMonthDays = (currentDate: Date): CalendarDay[] => {
+    //TODO: 유틸 함수의 단위 테스트 작성하기
     const today = new Date();
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth(); // 0-indexed
