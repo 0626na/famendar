@@ -1,17 +1,50 @@
 import { create } from "zustand";
 
-interface CalendarState {
+export interface ModalPosition {
+    top: number;
+    left: number;
+    right: number;
+    // 필요에 따라 bottom, width, height 등을 추가할 수 있습니다.
+}
+
+export interface CalendarState {
     displayedDate: Date;
+    selectedDateForEvent: Date | null; // 이벤트 생성을 위해 선택된 날짜
+    isEventModalOpen: boolean; // 이벤트 생성 모달 표시 여부
+    modalPosition: ModalPosition | null; // DOMRect 대신 ModalPosition 사용
     setDisplayedDate: (date: Date) => void;
     goToToday: () => void;
     goToNextMonth: () => void;
     goToPreviousMonth: () => void;
+    openEventModal: (date: Date, anchorRect: DOMRect) => void; // 특정 날짜로 모달 열기
+    closeEventModal: () => void; // 모달 닫기
 }
 
-export const useCalendarStore = create<CalendarState>((set) => ({
+export const useCalendarStore = create<CalendarState>()((set) => ({
+    modalPosition: null,
     displayedDate: new Date(), // 초기값은 현재 날짜
+    selectedDateForEvent: null,
+    isEventModalOpen: false,
     setDisplayedDate: (date) => set({ displayedDate: date }),
     goToToday: () => set({ displayedDate: new Date() }),
+    openEventModal: (date, anchorRect) => {
+        const position: ModalPosition = {
+            top: anchorRect.top,
+            left: anchorRect.left,
+            right: anchorRect.right,
+        };
+        set({
+            selectedDateForEvent: date,
+            isEventModalOpen: true,
+            modalPosition: position,
+        });
+    },
+    closeEventModal: () =>
+        set({
+            selectedDateForEvent: null,
+            isEventModalOpen: false,
+            // modalPosition: null, // 이전 수정사항: 모달이 닫힐 때 점프 현상 방지를 위해 주석 처리 유지
+        }),
     goToNextMonth: () =>
         set((state) => {
             const currentDate = state.displayedDate;
