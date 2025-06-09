@@ -19,7 +19,7 @@ export default function AuthProvider({
         // 인증 상태 변경 리스너 설정
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
+        } = supabase.auth.onAuthStateChange(async (_event, session) => {
             setIsLoading(true);
             const currentUser = session?.user ?? null;
 
