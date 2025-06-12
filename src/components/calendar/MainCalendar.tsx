@@ -1,18 +1,24 @@
 "use client";
 
 import { useMemo } from "react";
-import { useCalendarStore } from "@/store/calendarStore";
+import { useCalendarStore } from "@/store/calendarStore"; // CalendarState 타입 임포트
 import { generateMonthDays } from "@/utils/calendarUtils";
 
 const shortDaysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
 
 export default function MainCalendar() {
-    const { displayedDate } = useCalendarStore();
+    // 각 상태와 액션을 개별적으로 선택하여 불필요한 리렌더링 방지
+    const displayedDate = useCalendarStore((state) => state.displayedDate);
+    const openEventModal = useCalendarStore((state) => state.openEventModal);
+    const closeEventModal = useCalendarStore((state) => state.closeEventModal);
+    const isEventModalOpen = useCalendarStore(
+        (state) => state.isEventModalOpen
+    );
+
     const monthDays = useMemo(
         () => generateMonthDays(displayedDate),
         [displayedDate]
     );
-
     return (
         <div className="flex flex-col h-full sm:p-2 md:p-3">
             <div className="grid grid-cols-7 grid-rows-6 flex-1 gap-px bg-gray-200 border border-gray-200 rounded-4xl shadow-lg overflow-hidden">
@@ -20,13 +26,31 @@ export default function MainCalendar() {
                 {monthDays.map((dayData, index) => {
                     // index를 사용하여 첫 번째 주에 요일 표시
                     return (
-                        <div
+                        <button
                             key={dayData.date.toISOString()}
-                            className={`bg-white p-2 sm:p-3 flex flex-col items-center justify-start ${
+                            data-calendar-cell="true"
+                            onClick={(
+                                event: React.MouseEvent<HTMLButtonElement>
+                            ) => {
+                                // 현재 모달 상태를 확인합니다.
+                                if (isEventModalOpen) {
+                                    // 모달이 열려 있으면, 어떤 날짜를 클릭하든 모달을 닫습니다.
+                                    closeEventModal();
+                                } else {
+                                    // 모달이 닫혀 있으면, 클릭된 날짜에 대해 모달을 엽니다.
+                                    const rect =
+                                        event.currentTarget.getBoundingClientRect();
+                                    openEventModal(dayData.date, rect);
+                                }
+                            }}
+                            className={`bg-white p-2 sm:p-3 flex flex-col items-center justify-start relative ${
                                 dayData.isCurrentMonth
                                     ? "text-gray-800" // 현재 달
                                     : "text-gray-400" // 이전/다음 달
                             }`}
+                            // 이전/다음 달 날짜는 클릭해도 모달이 뜨지만, UI적으로 비활성화된 것처럼 보이게 할 수도 있습니다.
+                            // 예를 들어, dayData.isCurrentMonth가 false일 경우 onClick 핸들러를 비활성화하거나,
+                            // openEventModal 호출 전에 조건을 추가할 수 있습니다.
                         >
                             {/* 첫 번째 주(index < 7)에만 요일 표시 */}
                             {index < 7 && (
@@ -45,7 +69,7 @@ export default function MainCalendar() {
                                 {dayData.dayOfMonth}
                             </span>
                             {/* TODO: 여기에 이벤트 표시 영역 (예: <div className="mt-1 space-y-0.5">...이벤트들...</div>) */}
-                        </div>
+                        </button>
                     );
                 })}
             </div>

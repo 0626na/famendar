@@ -11,6 +11,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") 
 }
 
 model Profile {
@@ -22,4 +23,18 @@ model Profile {
   avatar_url String?   // 카카오에서 제공받은 프로필 사진 URL
 
   // @@map("profiles") // 테이블명을 'profiles'로 명시 (선택적, Prisma 규칙에 따르면 Profile 모델은 profiles 테이블이 됨)
+  events     Event[]   // 사용자가 작성한 이벤트 목록
+}
+
+model Event {
+  id             String   @id @default(uuid()) @db.Uuid
+  title          String
+  start_datetime DateTime @db.Timestamp // 타임존 포함 Timestamp
+  end_datetime   DateTime @db.Timestamp // 타임존 포함 Timestamp
+  created_at     DateTime @default(now()) @db.Timestamp
+  updated_at     DateTime @updatedAt @db.Timestamp
+
+  user    Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String  @db.Uuid // Profile 테이블의 id (auth.users.id) 와 연결
+
 }
